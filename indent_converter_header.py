@@ -10,6 +10,60 @@ class Arg:
         self.name = name
         self.value = value
 
+def get_arg(args):
+    obj = None
+    indent = '  '
+    target = '  '
+    start = 0
+    end = 0
+
+    if len(args) > 1 and len(args) <= 6:
+        try:
+            obj = args[1]
+        except:
+            print "- Forgot to input a text file"
+            print_program_info()
+            exit()
+        else:
+            try:
+                f = open(obj, "r")
+            except:
+                print "- Enter a correct path to that text file"
+                exit()
+            else:
+                content = f.readlines()
+
+                # Initlise a end again
+                end = len(content)
+
+                # Close the text file
+                f.close()
+                
+                # Check each arg
+                for index in range(2, len(args)):
+                    last_char = args[index][len(args[index]-1]
+                    if last_char.isdigit():
+                        if args[index].startswith("--indent="):
+                            indent = ' ' * last_char
+                        elif args[index].startswith("--target="):
+                            target = ' ' * last_char
+                        elif args[index].startswith("--start="):
+                            start = last_char
+                        elif args[index].startswith("--end="):
+                            end = last_char
+                        else:
+                            print_program_info()
+                            exit()
+                    else:
+                        print_program_info()
+                        exit()
+                
+
+                # Finally Return args
+                return content, indent, target, start, end
+    else:
+        exit()
+
 # method to print program information and how the program use
 def print_program_info():
     print 'This program takes at least one text file to process the program'

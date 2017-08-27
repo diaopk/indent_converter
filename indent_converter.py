@@ -22,13 +22,13 @@ import subprocess as p
 import io
 import argcomplete, argparse
 
-num_args = len(sys.argv) # the number of argunments entered
-args = {} # Dictionary object to store arguments entered
+#num_args = len(sys.argv) # the number of argunments entered
+#args = {} # Dictionary object to store arguments entered
 result = '' # result to be returned
 case_indent = '  ' # my case
-
-indent, target, start, end = h.xx()
-
+args1 = sys.argv
+content, indent, target, start, end = h.get_arg(args1)
+"""
 # Obtain parameters
 # ----------------START text file obtain------------
 try:
@@ -167,17 +167,18 @@ elif num_args == 6: # If 4 optional arguments entered
 elif num_args > 6: # If more than 4 arguments entered
     print '- syntax error: too many arguments entered'
 # -----------End optional arguments obtain----------
+"""
 
 # ---------- START Program process -----------------
 # process lines without needs to be converted from the head
-for line in content[0:startfrom]:
+for line in content[0:start]:
     result += line
 
 # The statements below are only for my case to use this program
 # These statements are based on the number of times I tab to 
 # indent a line If 1 tab occupies 8 whitespaces, then 
 # (indent_converter source_file 8 4 will convert each indent space# from 8 whitespaces into 4 whitespaces
-for line in content[startfrom:endwith]:
+for line in content[start:end]:
     line = h.converter(line, indent, target, case_indent=case_indent) # convert it into a new line 
     result += line
 
@@ -207,8 +208,3 @@ if result != content:
         new_file.write(result)
 else:
     print '- Nothing changed'
-
-# auto complete of arguments
-parser = argparse.ArgumentParser()
-parser.add_argument("--", choices=('indent', 'target'))
-argcomplete.autocomplete(parser)
