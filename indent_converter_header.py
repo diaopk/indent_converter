@@ -1,19 +1,10 @@
-#!/usr/local/bin/python
+#!/usr/bin/env python
 # Define some functions used by indent_convertor.py
-
-# Define argument names:
-arg_names = ['--indent', '--target', '--startfrom', '--endwith']
-
-# Define a class for argument object
-class Arg:
-    def __init__(self, name, value):
-        self.name = name
-        self.value = value
 
 def get_arg(args):
     obj = None
-    indent = '  '
-    target = '  '
+    indent = 4
+    target = 2
     start = 0
     end = 0
 
@@ -32,6 +23,7 @@ def get_arg(args):
                 exit()
             else:
                 content = f.readlines()
+                name = f.name
 
                 # Initlise a end again
                 end = len(content)
@@ -41,12 +33,12 @@ def get_arg(args):
                 
                 # Check each arg
                 for index in range(2, len(args)):
-                    last_char = args[index][len(args[index]-1]
+                    last_char = args[index][len(args[index])-1]
                     if last_char.isdigit():
                         if args[index].startswith("--indent="):
-                            indent = ' ' * last_char
+                            indent = int(last_char)
                         elif args[index].startswith("--target="):
-                            target = ' ' * last_char
+                            target = int(last_char)
                         elif args[index].startswith("--start="):
                             start = last_char
                         elif args[index].startswith("--end="):
@@ -58,7 +50,12 @@ def get_arg(args):
                         print_program_info()
                         exit()
                 
-
+                
+                print "indent: " + str(indent)
+                print "target: " + str(target)
+                print "start: " + str(start)
+                print "end: " + str(end)
+                print "filename: " + name
                 # Finally Return args
                 return content, indent, target, start, end
     else:
@@ -91,20 +88,11 @@ def subconverter(line, original_indent, raw):
 # requirement is met
 def converter(line, int_indent, int_target_indent, case_indent=None):
     if case_indent != None:
-        #print ''
-        #print 'int_indent: '+str(int_indent)
-        #print 'int_target_indent: '+str(int_target_indent)
         # Convert them into whitespaces
-        indent = ''.ljust(int_indent, ' ')
-        target_indent = ''.ljust(int_target_indent, ' ')
+        indent = ' ' * int_indent
+        target_indent = ' ' * int_target_indent
         line = str(line)
         raw_string = line.lstrip()
-        #print "indent:'%s'"%indent
-        #print "target_indent:'%s'"%target_indent
-        #print 'Before the loop line:'+line
-        #print 'Before the loop raw string:'+raw_string
-        #print 'test:'+line[len(indent):]
-        #print line[len(indent):] == raw_string
 
         if subconverter(line, indent, raw_string): # line with 8 spaces
             #print 'After the if original:'+line
@@ -147,10 +135,6 @@ def converter(line, int_indent, int_target_indent, case_indent=None):
             return line
     else:
         return 'haha'
-
-# Method to show error(s) message
-def errors_info():
-    print ''
 
 # Method to parse the passed argument and return an Agr object if argument
 # is correct otherwise return a error message

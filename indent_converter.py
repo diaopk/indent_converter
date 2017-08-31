@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/env python
 # THIS PROGRAM WILL OVERRIDE THE SOURCE FILE
 # This program supports two main festures to convert indentation.
 # ----------- First feature -----------------
@@ -15,15 +15,17 @@
 # feature to support but when I come to deeper programing in it, 
 # I found this feature is neccessary.
 
+# V003
+# handle python scripts indent problem
+# python indent problem no need to have '--indent' and '--target' entered
+# '--start' and '--end' are optional but actually input a python script 
+# is fine
+
 import sys
-# import argparse # someone says to use this module
 import indent_converter_header as h
 import subprocess as p
 import io
-import argcomplete, argparse
 
-#num_args = len(sys.argv) # the number of argunments entered
-#args = {} # Dictionary object to store arguments entered
 result = '' # result to be returned
 case_indent = '  ' # my case
 args1 = sys.argv
@@ -183,17 +185,15 @@ for line in content[start:end]:
     result += line
 
 # process lines without needs to be converted from the end
-for line in content[endwith:]:
+for line in content[end:]:
     result += line
 # ------------------- END Porgram process----------------
 
 
 print 'The following is the result: '
-print '|'
-print '|'
-print '|'
+print "\n"
 print result # check the result to be inputed later, do not have to
-
+"""
 if result != content:
     n = 1
     filename = f.name+'_copy'
@@ -208,3 +208,4 @@ if result != content:
         new_file.write(result)
 else:
     print '- Nothing changed'
+    """
