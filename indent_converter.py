@@ -22,177 +22,42 @@
 # is fine
 
 import sys
-import indent_converter_header as h
+import header as h
 import subprocess as p
 import io
 
 result = '' # result to be returned
 case_indent = '  ' # my case
-args1 = sys.argv
-content, indent, target, start, end = h.get_arg(args1)
-"""
-# Obtain parameters
-# ----------------START text file obtain------------
-try:
-    obj = str(sys.argv[1]) # file-object variable
-except:
-    print '- You forget to input a file'
-    h.print_program_info()
-    exit()
-else:
-    try:
-        f = open(obj, 'r')
-    except:
-        print '- Please enter a correct path to that text file'
-        exit()
-    else:
-        content = f.readlines()
+args = sys.argv # A list of arguments entered
+script, content, indent, target, start, end = h.get_arg(args)
 
-        # Define some default settings and arguments
-        indent = 8
-        target = 4
-        startfrom = 0
-        endwith = len(content)
+if __name__ == "__main__":
+    # ---------- START Program process -----------------
+    # Append lines that do not need to be converted
+    for line in content[0:start]:
+       result += line
 
-        # Then close the file
-        f.close()
-# ----------------End text file obtain----------------
-
-# ----------------Start optional arguments obtain-----
-if num_args == 3: # if 1 optional arugment entered
-    arg2 = h.arg_parser(sys.argv[2])
+    # The statements below are only for my case to use this program
+    # These statements are based on the number of times I tab to 
+    # indent a line If 1 tab occupies 8 whitespaces, then 
+    # (indent_converter source_file 8 4 will convert each indent space# from 8 whitespaces into 4 whitespaces
+    if script is None:
+        for line in content[start:end]:
+            # Convert it into a new line
+            line = h.converter(line, indent, target, case_indent=case_indent)
+            result += line
+    else: # processing python script
+        result += h.converter(content[start: end])
     
-    try:
-        # Store the arg object to args dictionary object
-        args.update({arg2.name: arg2.value})
-    except:
-        # If arg2 is not the Arg object then print error and exit the program
-        print arg2
-        exit()
-    else:
-        try:
-            # Try to store the arg2's value to startfrom or endwith
-            startfrom = args.get('startfrom')
-        except:
-            try:
-                endwith = args.get('endwith')
-            except:
-                print '- syntax error'
-                print '- Please type -h or --help for more informtaion'
-                exit() 
-
-elif num_args == 4: # If 2 optional arguments entered
-    arg2 = h.arg_parser(sys.argv[2])
-    arg3 = h.arg_parser(sys.argv[3])
-
-    try: 
-        # Store arg2 and arg3 objects to args dictinary object
-        # If those are Arg objects then go ahead
-        # Otherwise print errors and exit the program
-        args.update({arg2.name: arg2.value, arg3.name: arg3.value})
-    except:
-        # Print whichever is the type of string
-        for error in [arg2, arg3]:
-            print error
-        exit()
-    else:
-        if args.has_key('startfrom') and args.has_key('endwith'):
-            startfrom = args.get('startfrom')
-            endwith = args.get('endwith')
-        
-        elif args.has_key('indent') and args.has_key('target'):
-            indent = args.get('indent')
-            target = args.get('target')
-
-        else:
-            print '- syntax error'
-            print '- Please type -h or --help for more information'
-            exit()
-
-elif num_args == 5: # If 3 optional arguments entered
-    arg2 = h.arg_parser(sys.argv[2])
-    arg3 = h.arg_parser(sys.argv[3])
-    arg4 = h.arg_parser(sys.argv[4])
-
-    try:
-        args.update({arg2.name: arg2.value, arg3.name: arg3.value, arg4.name: arg4.value})
-
-    except:
-        for error in [arg2, arg3, arg4]:
-            print error
-
-        exit()
-
-    else:
-        if args.has_key('indent') and args.has_key('target') and args.has_key('startfrom'):
-            indent = args.get('indent')
-            target = args.get('target')
-            startfrom = args.get('startfrom')
-
-        elif args.has_key('indent') and args.has_key('target') and args.has_key('endwith'):
-            indent = args.get('indent')
-            target = args.ge('target')
-            endwith = args.get('endwith')
-
-        else:
-            print '- syntax error'
-            print '- Please type -h or --help for more information'
-            exit()
-
-elif num_args == 6: # If 4 optional arguments entered
-    arg2 = h.arg_parser(sys.argv[2])
-    arg3 = h.arg_parser(sys.argv[3])
-    arg4 = h.arg_parser(sys.argv[4])
-    arg5 = h.arg_parser(sys.argv[5])
-
-    try:
-        args.update({arg2.name: arg2.value, arg3.name: arg3.value, arg4.name: arg4.value, arg5.name: arg5.value})
-
-    except:
-        for error in [arg2, arg3, arg4, arg5]:
-            print error
-
-        exit()
-
-    else:
-        if args.has_key('indent') and args.has_key('target') and args.has_key('startfrom') and args.has_key('endwith'):
-            indent = args.get('indent')
-            target = args.get('target')
-            startfrom = args.get('startfrom')
-            endwith = args.get('endwith')
-
-        else:
-            print '- syntax error'
-            print '- Please type -h or --help for more information'
-            exit()
-
-elif num_args > 6: # If more than 4 arguments entered
-    print '- syntax error: too many arguments entered'
-# -----------End optional arguments obtain----------
-"""
-
-# ---------- START Program process -----------------
-# process lines without needs to be converted from the head
-for line in content[0:start]:
-    result += line
-
-# The statements below are only for my case to use this program
-# These statements are based on the number of times I tab to 
-# indent a line If 1 tab occupies 8 whitespaces, then 
-# (indent_converter source_file 8 4 will convert each indent space# from 8 whitespaces into 4 whitespaces
-for line in content[start:end]:
-    line = h.converter(line, indent, target, case_indent=case_indent) # convert it into a new line 
-    result += line
-
-# process lines without needs to be converted from the end
-for line in content[end:]:
-    result += line
-# ------------------- END Porgram process----------------
+    # Append lines that do not need to be converted
+    for line in content[end:]:
+        result += line
+    # ------------------- END Porgram process----------------
 
 
-print 'The following is the result: '
-print "\n"
-print result # check the result to be inputed later, do not have to
+    print 'The following is the result: '
+    print "\n"
+    print result
 """
 if result != content:
     n = 1
