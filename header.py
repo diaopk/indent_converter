@@ -41,9 +41,9 @@ def get_arg(args):
                         for arg in args[2:]:
                             last_char = arg[-1]
                             if arg.startswith("--start="):
-                                start = int(last_char)
+                                start = int(last_char)-1
                             elif arg.startswith("--end="):
-                                end = int(last_char)
+                                end = int(last_char)-1
                             else:
                                 print_program_info(script="python")
                                 exit()
@@ -54,9 +54,9 @@ def get_arg(args):
                     
                         if last_char.isdigit:
                             if arg.startswith("--start="):
-                                start = int(last_char)
+                                start = int(last_char)-1
                             elif arg.startswith("--end="):
-                                end = int(last_char)
+                                end = int(last_char)-1
                             elif arg.startswith("--indent="):
                                 indent = int(last_char)
                             elif arg.startswith("--target="):
@@ -168,70 +168,25 @@ def converter(line, int_indent, int_target_indent, case_indent=None):
 # Method to convert python script
 def converter(content):
     result = ""
-    for line in content:
-        if line[-1] == "\n" and line[-2] == ":":
-            result += line
-            print "yea"
+    tab = "    " # 4 spaces width
+
+    for index in range(len(content)):
+        # The current line
+        line = content[index]
+
+        if line[-2] == ":":
+            # Convert rest of the line and return
+            def _converter(index, subcontent, result):
+                if index > len(subcontent)-1:
+                    return result 
+                else:
+                    return _converter(index+1, subcontent, result+tab+subcontent[index]) 
+
+            # Add a tab for rest of the line and return
+            result = _converter(index+1, content[index:], result+line)
+            break
         else:
             result += line
             pass
     return result
 
-"""
-# Method to parse the passed argument and return an Agr object if argument
-# is correct otherwise return a error message
-def arg_parser(arg):
-    arg = str(arg) # Make arg as a string
-    if arg.count('=') == 1: # check '=' exist and the number
-        # Store the argument and data
-        arg_name = arg[0:arg.find('=')] 
-        arg_value = arg[arg.find('=')+1:]
-        
-        #print arg_name + ': ' + arg_value
-        # check argment name if it is in the defined argment names or not
-        if arg_name in arg_names:
-            if arg_value.isdigit():
-
-                # Make arg_name and arg_value formal to be then returned
-                arg_name = str(arg_name[2:])
-                arg_value = int(arg_value)
-
-                # Everything get well return a dict object
-                return Arg(arg_name, arg_value)
-            else:
-                return '- syntax error: argument value '+str(arg_value)
-        else:
-            return '- syntax error: argument name '+str(arg_name)
-    
-    elif arg.count('-') == 1: # If enter a -d-like argument
-        if arg.find('-') == 0 and arg[arg.find('-')+1:].isalpha():
-            arg_name = 'default'
-            arg_value = arg[arg.find('-')+1:]
-
-            # Everything get well return a dict object
-            return {arg_name: arg_value}
-
-        else:
-            return '- syntax error: only accept -d'
-
-    else:
-        return '- syntax error: invaild arguement entered'
-
-# Method that passing argument'svalue to the variable (startfrom, endwith
-# , indent or target) on indent_convertor.py if var is the same as arg's
-# key, which means that, for example variable startfrom matchs the argument
-# arg's key('startfrom').
-# arg should be the dict object returned by arg_check() method.
-# var is the variable name(in string) among indent, target, startfrom and 
-# endwith used in indent_convertor.py script.
-# default is the default value passed to the variable if var does not match
-# the arg
-def argval_passto_var(arg, var, default):
-    if isinstance(arg, type({})): # If the argument passed is dict object
-        if arg.keys()[0] == var:
-            return int(arg.get(var)) # Returns the value from arg dict if arg's key matchs var
-        else:
-            return default # otherwise returns the default value
-    else: # If arg is the string this means the arg_check() returns error
-        return arg # Returns an error message to variable then print it out
-        """

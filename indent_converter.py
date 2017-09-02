@@ -1,25 +1,4 @@
 #!/usr/bin/env python
-# THIS PROGRAM WILL OVERRIDE THE SOURCE FILE
-# This program supports two main festures to convert indentation.
-# ----------- First feature -----------------
-# The process of converting indents can be based on the number of 
-# whitespaces that ONE TAB occupies.
-# For example
-# (indent_converter source_file 8 4) will convert from 8 
-# whitespaces into 4 whitespaces for each line. If a line doesn't 
-# start with a tab, then This line would not change
-
-# ------------ Second feature --------------
-# The process of converting indents can add a number of 
-# whitespaces to the head of each line. This is not my original 
-# feature to support but when I come to deeper programing in it, 
-# I found this feature is neccessary.
-
-# V003
-# handle python scripts indent problem
-# python indent problem no need to have '--indent' and '--target' entered
-# '--start' and '--end' are optional but actually input a python script 
-# is fine
 
 import sys
 import header as h
@@ -44,13 +23,13 @@ if __name__ == "__main__":
     if script is None:
         for line in content[start:end]:
             # Convert it into a new line
-            line = h.converter(line, indent, target, case_indent=case_indent)
+            line = h.converter(line, indent, target, case_indent)
             result += line
     else: # processing python script
-        result += h.converter(content[start: end])
+        result += h.converter(content[start: end+1])
     
     # Append lines that do not need to be converted
-    for line in content[end:]:
+    for line in content[end+1:]:
         result += line
     # ------------------- END Porgram process----------------
 
