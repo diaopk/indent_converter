@@ -1,5 +1,5 @@
 # indent_converter
-A simple python script taking text file, python script ... and converting each line of the file into new line with required indentation. This script is personaly used by myself for talking note and writing python scripts.
+A simple python script taking text file, python script ... and converting each line of the file into new line with required indentation. This script is personally used by myself for talking note and writing python scripts.
 
 # Use
 ```
@@ -8,9 +8,9 @@ A simple python script taking text file, python script ... and converting each l
 
 There are 4 numbers passed to the script.
 - indent takes the number of white spaces as the old indentation that you want it to be converted. 4 by default.
-- target takes the number of white spaces as the new indentation that you want to relace. 4 by default.
-- start takes the line number where the script starts. first line by default.
-- end takes the line number where the script ends. the last line by default.
+- target takes the number of white spaces as the new indentation that you want to replace. 4 by default.
+- start takes the line number where the script starts. First line by default.
+- end takes the line number where the script ends. The last line by default.
 
 Any of these arguments have default value so no need to pass all of them.
 
