@@ -73,10 +73,10 @@ def get_arg(args):
                 print "target: " + str(target)
                 print "start: " + str(start)
                 print "end: " + str(end)
-                print "filename: " + name
+                print "filename: " + name[:-3]
                 print "extension: " + name[-3:]
                 # Finally Return args
-                return script, content, indent, target, start, end
+                return script, name, content, indent, target, start, end
     else:
         exit()
 
@@ -89,14 +89,14 @@ def print_program_info(script=None):
         print '- Accepted syntaxs:(note that the order of args entered does not mater)'
         print '- ./indent_converter source_file --start/end=num'
         print '-                              --indent=num1 --target=num2'
-        print '-                              --starfrom=line1 --endwith=line2'
-        print '-                              --indent=num1 --target=num2 --starfrom/endwith=line'
-        print '-                              --indent=num1 --target=num2 --startfrom=line1 --endwith=line2'
+        print '-                              --start=line1 --end=line2'
+        print '-                              --indent=num1 --target=num2 --start/end=line'
+        print '-                              --indent=num1 --target=num2 --start=line1 --end=line2'
     elif script == "python":
         print "The program got python script but not acceptable arguments"
         print "- Acceptable arguments:"
-        print "- ./indent_converter.py python_scirpt.py --start=num1 --end=num2"
-        print "-                                        --end=num1 --start=num2"
+        print "- ./indent_converter.py python_scirpt.py --start=line1 --end=line2"
+        print "-                                        --end=line1 --start=line2"
 
 # Method to return Boolean value to indicate the condition if a passed
 # line startswith a specific number of indents and if the string behind
@@ -176,17 +176,34 @@ def converter(content):
 
         if line[-2] == ":":
             # Convert rest of the line and return
-            def _converter(index, subcontent, result):
+            def _converter(index, subcontent, result, times):
                 if index > len(subcontent)-1:
                     return result 
+                elif subcontent[index][-2] == ":":
+                    times += 1
+                    return _converter(index+1, subcontent, result+times*tab+subcontent[index], times)
                 else:
-                    return _converter(index+1, subcontent, result+tab+subcontent[index]) 
+                    return _converter(index+1, subcontent, result+times*tab+subcontent[index], times) 
 
             # Add a tab for rest of the line and return
-            result = _converter(index+1, content[index:], result+line)
+            result = _converter(index+1, content[index:], result+line, 1)
             break
         else:
             result += line
             pass
     return result
 
+# Method to check text file type and return a new filename
+def check_type(f):
+    if f[-3:] == ".py":
+        # python script
+        extension = ".py"
+        name = f[:-3]
+        return name + "_copy" + extension
+    elif f[-4:] == ".txt":
+        # normal text file
+        extension = ".txt"
+        name = f[:-4]
+        return name + "_copy" + extension
+    else:
+        return f

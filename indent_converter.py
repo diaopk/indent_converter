@@ -8,7 +8,7 @@ import io
 result = '' # result to be returned
 case_indent = '  ' # my case
 args = sys.argv # A list of arguments entered
-script, content, indent, target, start, end = h.get_arg(args)
+script, filename, content, indent, target, start, end = h.get_arg(args)
 
 if __name__ == "__main__":
     # ---------- START Program process -----------------
@@ -37,19 +37,12 @@ if __name__ == "__main__":
     print 'The following is the result: '
     print "\n"
     print result
-"""
-if result != content:
-    n = 1
-    filename = f.name+'_copy'
-    # The following writes a new file
-    while p.os.path.exists(filename+str(n)) == True:
-        n += 1
-        filename += str(n)
-    
-    # Make sure there is no files with the same filename
-    # Then create a new file and store the result in it
-    with io.FileIO(filename, 'w') as new_file:
-        new_file.write(result)
-else:
-    print '- Nothing changed'
-    """
+
+    # Write a file and output
+    if result == content:
+        print "- Nothing written"
+    else:
+        f = h.check_type(filename)       
+        
+        with io.FileIO(f, "w") as new_file:
+            new_file.write(result)
